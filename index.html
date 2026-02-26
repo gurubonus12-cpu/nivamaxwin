@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pro Solana Sniper | Elite V5</title>
+    <style>
+        /* Modern Pro Theme Variables */
+        :root {
+            --sol-green: #14F195;
+            --sol-purple: #9945FF;
+            --bg-dark: #09090b;
+            --panel-bg: #18181b;
+            --panel-border: #27272a;
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --danger: #ef4444;
+            --success: #10b981;
+            --warning: #f59e0b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: var(--panel-bg);
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid var(--panel-border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .header { text-align: center; }
+        h1 { color: var(--sol-green); font-size: 24px; margin-bottom: 5px; font-weight: 700; }
+        .subtitle { color: var(--text-muted); font-size: 14px; }
+
+        .filters {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--panel-border);
+            font-size: 13px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .filters div { flex: 1; text-align: center; min-width: 80px; }
+        .filter-highlight { color: var(--sol-purple); font-weight: bold; }
+
+        .btn-group { display: flex; gap: 10px; flex-direction: column; }
+        button {
+            width: 100%;
+            padding: 16px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        button:active { transform: scale(0.98); }
+        .btn-start { background-color: var(--sol-green); color: #000; }
+        .btn-start:hover { opacity: 0.9; }
+        .btn-stop { background-color: var(--danger); color: #fff; display: none; }
+        .btn-stop:hover { opacity: 0.9; }
+
+        /* Responsive Table Container */
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--panel-border);
+        }
+        table {
+            width: 100%;
+            min-width: 600px; 
+            border-collapse: collapse;
+            background-color: rgba(0,0,0,0.2);
+        }
+        th, td { padding: 14px 16px; text-align: left; font-size: 14px; border-bottom: 1px solid var(--panel-border); }
+        th { background-color: rgba(20, 241, 149, 0.1); color: var(--sol-green); font-weight: 600; }
+        .profit { color: var(--success); font-weight: bold; }
+        .loss { color: var(--danger); font-weight: bold; }
+        .neutral { color: var(--text-muted); }
+
+        /* Click to copy styles */
+        .copy-address {
+            color: #777;
+            cursor: pointer;
+            transition: color 0.2s;
+            text-decoration: underline dotted #777;
+        }
+        .copy-address:hover {
+            color: var(--sol-green);
+            text-decoration: none;
+        }
+
+        /* Quick Buy Button */
+        .btn-dex {
+            background-color: var(--sol-purple);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+        }
+        .btn-dex:hover { opacity: 0.8; }
+
+        .log-box {
+            background-color: #000;
+            padding: 16px;
+            border-radius: 10px;
+            font-family: 'ui-monospace', 'Cascadia Code', 'Source Code Pro', monospace;
+            height: 250px;
+            overflow-y: auto;
+            font-size: 13px;
+            color: var(--text-muted);
+            border: 1px solid var(--panel-border);
+            line-height: 1.5;
+        }
+        .signal-buy { color: var(--success); font-weight: bold; }
+        .signal-sell { color: var(--danger); font-weight: bold; }
+        .signal-safe { color: var(--sol-purple); font-weight: bold; }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .container { padding: 15px; gap: 15px; }
+            h1 { font-size: 20px; }
+            .filters { flex-direction: column; text-align: left; }
+            .filters div { text-align: left; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+            .filters div:last-child { border-bottom: none; }
+            th, td { padding: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>🎯 Elite Sniper V5</h1>
+        <div class="subtitle">High-Win Rate | Auto-Cleanup | Max 10 Slots</div>
+    </div>
+
+    <div class="filters">
+        <div><strong>Liq:</strong> >$10k</div>
+        <div><strong>1h Vol:</strong> >$25k</div>
+        <div><span class="filter-highlight"><strong>Momentum:</strong> Buys > Sells</span></div>
+        <div><span class="filter-highlight"><strong>Socials:</strong> Req.</span></div>
+        <div><strong>TP/SL:</strong> +30% / -15%</div>
+    </div>
+
+    <audio id="buySound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
+    <audio id="sellSound" src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg" preload="auto"></audio>
+    <audio id="rejectSound" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg" preload="auto"></audio>
+
+    <div class="btn-group">
+        <button class="btn-start" id="startBtn">🚀 Start Elite Scanner</button>
+        <button class="btn-stop" id="stopBtn">🛑 Emergency Stop</button>
+    </div>
+
+    <div class="table-wrapper">
+        <table id="portfolioTable">
+            <thead>
+                <tr>
+                    <th>Token</th>
+                    <th>Entry ($)</th>
+                    <th>Current ($)</th>
+                    <th>PnL %</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="portfolioBody">
+                <tr><td colspan="5" style="text-align:center; color: #666;">No active positions (0/10)</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="log-box" id="logBox"></div>
+</div>
+
+<script>
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+    const logBox = document.getElementById('logBox');
+    const portfolioBody = document.getElementById('portfolioBody');
+    const buySound = document.getElementById('buySound');
+    const sellSound = document.getElementById('sellSound');
+    const rejectSound = document.getElementById('rejectSound');
+
+    let scanInterval;
+    let priceMonitorInterval;
+    let knownTokens = new Set(); 
+    let activePositions = {}; 
+    const MAX_SLOTS = 10;
+    
+    const MAX_LOGS = 50; 
+    let logHistory = ["> System initialized with Elite High-Win protections..."];
+
+    function initLog() {
+        renderLogs();
+    }
+
+    function log(message, type = '') {
+        const timestamp = new Date().toLocaleTimeString([], { hour12: false });
+        let prefix = `<span style="color:#555">[${timestamp}]</span> `;
+        
+        if (type === 'buy') message = `<span class="signal-buy">✅ SECURE BUY: ${message}</span>`;
+        if (type === 'sell') message = `<span class="signal-sell">🚨 CLOSED: ${message}</span>`;
+        if (type === 'safe') message = `<span class="signal-safe">🎯 ${message}</span>`;
+        if (type === 'reject') message = `<span style="color: #666;">❌ REJECTED: ${message}</span>`;
+        
+        logHistory.push(`${prefix}${message}`);
+        
+        if (logHistory.length > MAX_LOGS) {
+            logHistory.shift(); 
+        }
+        renderLogs();
+    }
+
+    function renderLogs() {
+        logBox.innerHTML = logHistory.join('<br>');
+        logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    function copyToClipboard(text, element) {
+        navigator.clipboard.writeText(text).then(() => {
+            const originalText = element.innerText;
+            element.innerText = "Copied!";
+            element.style.color = "var(--sol-green)";
+            
+            setTimeout(() => {
+                element.innerText = originalText;
+                element.style.color = ""; 
+            }, 1000);
+        }).catch(err => {
+            log(`Failed to copy address: ${err}`, "sell");
+        });
+    }
+
+    // --- ANTI-CORS FETCH WRAPPER ---
+    async function safeFetch(url) {
+        try {
+            const res = await fetch(url, { cache: 'no-store' });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return await res.json();
+        } catch (error) {
+            if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+                const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+                const proxyRes = await fetch(proxyUrl, { cache: 'no-store' });
+                if (!proxyRes.ok) throw new Error(`Proxy HTTP ${proxyRes.status}`);
+                return await proxyRes.json();
+            }
+            throw error; 
+        }
+    }
+
+    // --- 1. ELITE HIGH-WIN SCANNER ---
+    async function scanMarket() {
+        const currentActiveCount = Object.keys(activePositions).length;
+        if (currentActiveCount >= MAX_SLOTS) {
+            log(`Portfolio full (${MAX_SLOTS}/${MAX_SLOTS}). Waiting for TP/SL to free up slots...`);
+            return;
+        }
+
+        log(`📡 Sweeping for elite pairs... (Slots: ${currentActiveCount}/${MAX_SLOTS})`);
+        try {
+            const profiles = await safeFetch('https://api.dexscreener.com/token-profiles/latest/v1');
+            
+            if (!profiles || !Array.isArray(profiles)) return;
+
+            const newSolTokens = profiles
+                .filter(t => t.chainId === 'solana' && !knownTokens.has(t.tokenAddress))
+                .map(t => t.tokenAddress);
+
+            if (newSolTokens.length === 0) return;
+
+            const addressString = newSolTokens.slice(0, 30).join(',');
+            const pairData = await safeFetch(`https://api.dexscreener.com/latest/dex/tokens/${addressString}`);
+            
+            if (!pairData || !pairData.pairs) return;
+
+            for (const pool of pairData.pairs) {
+                // Stop adding if we hit the 10 max limit during this loop
+                if (Object.keys(activePositions).length >= MAX_SLOTS) break; 
+
+                if (pool.chainId !== 'solana' || !pool.baseToken || !pool.priceUsd) continue;
+
+                const tokenAddress = pool.baseToken.address;
+                const tokenName = pool.baseToken.symbol.substring(0, 10);
+                
+                const price = parseFloat(pool.priceUsd);
+                const liquidity = pool.liquidity?.usd || 0;
+                const fdv = pool.fdv || 0;
+                const volume1h = pool.volume?.h1 || 0;
+                const buys1h = pool.txns?.h1?.buys || 0;
+                const sells1h = pool.txns?.h1?.sells || 0;
+                const totalTxns = buys1h + sells1h;
+
+                if (isNaN(price) || isNaN(liquidity)) continue; 
+
+                if (!knownTokens.has(tokenAddress)) {
+                    knownTokens.add(tokenAddress); 
+
+                    // 🎯 ELITE FILTERS (HIGH WIN PROBABILITY)
+                    if (liquidity < 10000) continue;         // Higher liquidity ensures easier exits
+                    if (fdv < 100000) continue;              // Minimum 100k Market Cap
+                    if (volume1h < 25000) continue;          // High trading interest required
+                    if (totalTxns < 100) continue;           // Must have established history
+                    
+                    // Bullish Momentum Check: Must have 20% more buys than sells
+                    if (sells1h === 0 || buys1h < (sells1h * 1.2)) {
+                        rejectSound.play().catch(() => {});
+                        log(`${tokenName} blocked: Weak momentum or honeypot`, "reject");
+                        continue;
+                    }
+
+                    // Socials Check
+                    const hasSocials = pool.info && (
+                        (pool.info.websites && pool.info.websites.length > 0) || 
+                        (pool.info.socials && pool.info.socials.length > 0)
+                    );
+                    
+                    if (!hasSocials) {
+                        rejectSound.play().catch(() => {});
+                        log(`${tokenName} blocked: No socials linked`, "reject");
+                        continue; 
+                    }
+
+                    // If it passes all elite checks, execute buy
+                    log(`Elite Setup Found: ${tokenName}`, "safe");
+                    executeBuy(tokenAddress, tokenName, price);
+                }
+            }
+        } catch (error) {
+            log(`Scan Network Error: ${error.message}`);
+        }
+    }
+
+    // --- 2. EXECUTION ---
+    function executeBuy(address, name, price) {
+        activePositions[address] = {
+            name: name,
+            entryPrice: price,
+            currentPrice: price,
+            pnl: 0
+        };
+        
+        buySound.play().catch(() => {}); 
+        log(`${name} at $${price.toFixed(6)}`, "buy");
+        updatePortfolioUI();
+    }
+
+    // --- 3. PRICE MONITOR & AUTO CLEANUP ---
+    async function monitorPrices() {
+        const addresses = Object.keys(activePositions);
+        if (addresses.length === 0) return;
+
+        const batch = addresses.slice(0, 30); 
+        
+        try {
+            const addressString = batch.join(',');
+            const data = await safeFetch(`https://api.dexscreener.com/latest/dex/tokens/${addressString}`);
+            
+            if (!data || !data.pairs) return;
+
+            const latestPrices = {};
+            for (const pair of data.pairs) {
+                if (pair.chainId === 'solana' && pair.baseToken) {
+                    const baseAddr = pair.baseToken.address;
+                    if (!latestPrices[baseAddr]) {
+                        latestPrices[baseAddr] = parseFloat(pair.priceUsd);
+                    }
+                }
+            }
+
+            for (const address of batch) {
+                if (latestPrices[address]) {
+                    const newPrice = latestPrices[address];
+                    if (isNaN(newPrice) || newPrice <= 0) continue;
+
+                    const entryPrice = activePositions[address].entryPrice;
+                    const pnlPercent = ((newPrice - entryPrice) / entryPrice) * 100;
+
+                    activePositions[address].currentPrice = newPrice;
+                    activePositions[address].pnl = pnlPercent;
+
+                    // AUTO CLEANUP ON TP/SL
+                    if (pnlPercent >= 30) {
+                        triggerSell(address, `TP Hit (+${pnlPercent.toFixed(1)}%)`);
+                    } else if (pnlPercent <= -15) {
+                        triggerSell(address, `SL Hit (${pnlPercent.toFixed(1)}%)`);
+                    }
+                }
+            }
+            updatePortfolioUI();
+
+        } catch (error) {
+            log(`Price check failed: ${error.message}`);
+        }
+    }
+
+    // --- 4. ALERTS & REMOVAL ---
+    function triggerSell(address, reason) {
+        const tokenName = activePositions[address].name;
+        
+        // Remove from list to free up the slot
+        delete activePositions[address]; 
+        
+        sellSound.play().catch(() => {}); 
+        log(`${tokenName} ${reason} - Removed from active slots.`, "sell");
+        updatePortfolioUI();
+    }
+
+    // --- 5. RENDER UI ---
+    function updatePortfolioUI() {
+        const addresses = Object.keys(activePositions);
+        const activeCount = addresses.length;
+        
+        if (activeCount === 0) {
+            portfolioBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: #666;">No active positions (0/${MAX_SLOTS})</td></tr>`;
+            return;
+        }
+
+        let htmlRender = '';
+        
+        for (const address of addresses) {
+            const pos = activePositions[address];
+            
+            let pnlDisplay = "0.00%";
+            let pnlClass = "neutral";
+
+            if (pos.pnl !== 0) {
+                pnlDisplay = `${pos.pnl > 0 ? '+' : ''}${pos.pnl.toFixed(2)}%`;
+                pnlClass = pos.pnl > 0 ? 'profit' : 'loss';
+            }
+
+            htmlRender += `
+                <tr>
+                    <td>
+                        <strong>${pos.name}</strong><br>
+                        <small class="copy-address" onclick="copyToClipboard('${address}', this)" title="Click to copy full address">
+                            ${address.substring(0,6)}...
+                        </small>
+                    </td>
+                    <td>$${pos.entryPrice.toFixed(6)}</td>
+                    <td>$${pos.currentPrice.toFixed(6)}</td>
+                    <td class="${pnlClass}">${pnlDisplay}</td>
+                    <td>
+                        <a href="https://dexscreener.com/solana/${address}" target="_blank" class="btn-dex">Trade on Dex</a>
+                    </td>
+                </tr>
+            `;
+        }
+        portfolioBody.innerHTML = htmlRender;
+    }
+
+    // --- CONTROLS ---
+    startBtn.addEventListener('click', () => {
+        // Unlock audio context for all sounds
+        buySound.play().catch(() => {}); 
+        rejectSound.play().catch(() => {});
+        sellSound.play().catch(() => {});
+        
+        startBtn.style.display = 'none';
+        stopBtn.style.display = 'block';
+        
+        log(`🟢 Elite Engine Started. Max capacity: ${MAX_SLOTS} slots.`);
+        
+        scanMarket();
+        scanInterval = setInterval(scanMarket, 20000); 
+        priceMonitorInterval = setInterval(monitorPrices, 25000); 
+    });
+
+    stopBtn.addEventListener('click', () => {
+        startBtn.style.display = 'block';
+        stopBtn.style.display = 'none';
+        
+        clearInterval(scanInterval);
+        clearInterval(priceMonitorInterval);
+        log("🛑 Engine Stopped securely.");
+    });
+
+    initLog();
+</script>
+
+</body>
+</html>
