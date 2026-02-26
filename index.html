@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Pro Solana Sniper | Web3 V6</title>
+    <title>Pro Solana Sniper | V8 Ultimate</title>
     <style>
-        /* Modern Pro Theme Variables */
         :root {
             --sol-green: #14F195;
             --sol-purple: #9945FF;
@@ -45,31 +44,8 @@
         }
 
         .header { text-align: center; }
-        h1 { color: var(--sol-green); font-size: 24px; margin-bottom: 5px; font-weight: 700; }
-        .subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 15px; }
-
-        /* Wallet Button */
-        .btn-wallet {
-            background-color: #333;
-            color: var(--text-main);
-            padding: 12px 20px;
-            border-radius: 8px;
-            border: 1px solid #555;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-        .btn-wallet:hover { background-color: #444; border-color: var(--sol-purple); }
-        .btn-wallet.connected {
-            background-color: rgba(20, 241, 149, 0.1);
-            border-color: var(--sol-green);
-            color: var(--sol-green);
-        }
+        h1 { color: var(--sol-green); font-size: 24px; margin-bottom: 5px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 10px; }
 
         .filters {
             display: flex;
@@ -78,12 +54,13 @@
             padding: 15px;
             border-radius: 10px;
             border: 1px solid var(--panel-border);
-            font-size: 13px;
+            font-size: 12px;
             flex-wrap: wrap;
             gap: 10px;
         }
         .filters div { flex: 1; text-align: center; min-width: 80px; }
-        .filter-highlight { color: var(--sol-purple); font-weight: bold; }
+        .filter-highlight { color: var(--warning); font-weight: bold; }
+        .filter-gold { color: #fbbf24; font-weight: bold; }
 
         .btn-group { display: flex; gap: 10px; flex-direction: column; }
         button {
@@ -91,20 +68,19 @@
             padding: 16px;
             border-radius: 10px;
             border: none;
-            font-weight: 700;
+            font-weight: 900;
             font-size: 16px;
             cursor: pointer;
             transition: transform 0.1s, opacity 0.2s;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
         }
         button:active { transform: scale(0.98); }
-        .btn-start { background-color: var(--sol-green); color: #000; }
+        .btn-start { background-color: var(--sol-green); color: #000; box-shadow: 0 0 15px rgba(20, 241, 149, 0.3); }
         .btn-start:hover { opacity: 0.9; }
         .btn-stop { background-color: var(--danger); color: #fff; display: none; }
         .btn-stop:hover { opacity: 0.9; }
 
-        /* Responsive Table Container */
         .table-wrapper {
             width: 100%;
             overflow-x: auto;
@@ -121,50 +97,15 @@
         th { background-color: rgba(20, 241, 149, 0.1); color: var(--sol-green); font-weight: 600; }
         .profit { color: var(--success); font-weight: bold; }
         .loss { color: var(--danger); font-weight: bold; }
-        .neutral { color: var(--text-muted); }
 
-        .copy-address {
-            color: #777;
-            cursor: pointer;
-            transition: color 0.2s;
-            text-decoration: underline dotted #777;
-        }
+        .copy-address { color: #777; cursor: pointer; text-decoration: underline dotted #777; }
         .copy-address:hover { color: var(--sol-green); text-decoration: none; }
 
-        /* Action Buttons */
         .action-cell { display: flex; gap: 8px; }
-        
-        .btn-dex {
-            background-color: var(--panel-bg);
-            color: var(--sol-purple);
-            border: 1px solid var(--sol-purple);
-            padding: 8px 12px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 12px;
-            font-weight: bold;
-            display: inline-block;
-            transition: all 0.2s;
-            white-space: nowrap;
-        }
-        .btn-dex:hover { background-color: var(--sol-purple); color: #fff; }
-
-        .btn-early-sell {
-            background-color: var(--warning);
-            color: #000;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: opacity 0.2s;
-            white-space: nowrap;
-            width: auto;
-            text-transform: none;
-            letter-spacing: normal;
-        }
-        .btn-early-sell:hover { opacity: 0.8; }
+        .btn-buy { background-color: var(--sol-green); color: #000; padding: 8px 12px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: bold; transition: opacity 0.2s; }
+        .btn-buy:hover { opacity: 0.8; }
+        .btn-sell { background-color: var(--danger); color: #fff; padding: 8px 12px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: bold; transition: opacity 0.2s; }
+        .btn-sell:hover { opacity: 0.8; }
 
         .log-box {
             background-color: #000;
@@ -181,15 +122,14 @@
         .signal-buy { color: var(--success); font-weight: bold; }
         .signal-sell { color: var(--danger); font-weight: bold; }
         .signal-safe { color: var(--sol-purple); font-weight: bold; }
+        .signal-reject { color: #555; }
 
         @media (max-width: 600px) {
             body { padding: 10px; }
             .container { padding: 15px; gap: 15px; }
-            h1 { font-size: 20px; }
             .filters { flex-direction: column; text-align: left; }
             .filters div { text-align: left; padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
             .filters div:last-child { border-bottom: none; }
-            th, td { padding: 10px; }
         }
     </style>
 </head>
@@ -197,30 +137,23 @@
 
 <div class="container">
     <div class="header">
-        <h1>👻 Web3 Sniper V6</h1>
-        <div class="subtitle">Phantom Connected | Early Profit System</div>
-        <button id="connectWalletBtn" class="btn-wallet">
-            <svg width="20" height="20" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/0000/svg">
-                <path d="M42.1282 3.65545C61.4287 -4.18342 98.6756 0.999496 112.569 19.3444C126.463 37.6893 129.58 60.5901 127.311 75.8753C125.043 91.1604 115.968 120.323 88.7423 125.555C61.5165 130.787 54.0205 119.317 56.6346 109.917C59.2488 100.518 73.1614 91.1186 67.9298 78.5866C62.6983 66.0546 39.1678 69.1912 28.7061 80.678C18.2443 92.1648 3.52227 94.2372 0.73037 83.2721C-2.06153 72.307 3.52227 49.313 11.3664 36.7561C19.2105 24.1991 22.8277 11.4943 42.1282 3.65545Z" fill="#AB9FF2"/>
-            </svg>
-            Connect Phantom
-        </button>
+        <h1>⚡ V8 God-Mode Sniper</h1>
+        <div class="subtitle">High-Speed Polling | strict Profit Filters</div>
     </div>
 
     <div class="filters">
-        <div><strong>Liq:</strong> >$10k</div>
-        <div><strong>1h Vol:</strong> >$25k</div>
-        <div><span class="filter-highlight"><strong>Momentum:</strong> Buys > Sells</span></div>
-        <div><span class="filter-highlight"><strong>Socials:</strong> Req.</span></div>
+        <div><strong>Liq:</strong> >$20k</div>
+        <div><strong>1h Vol:</strong> >$50k</div>
+        <div><span class="filter-gold"><strong>MCap (FDV):</strong> $100k - $2M</span></div>
+        <div><span class="filter-highlight"><strong>Buys:</strong> 1.5x > Sells</span></div>
         <div><strong>TP/SL:</strong> +30% / -15%</div>
     </div>
 
     <audio id="buySound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
     <audio id="sellSound" src="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg" preload="auto"></audio>
-    <audio id="rejectSound" src="https://actions.google.com/sounds/v1/cartoon/pop.ogg" preload="auto"></audio>
-
+    
     <div class="btn-group">
-        <button class="btn-start" id="startBtn">🚀 Start Web3 Scanner</button>
+        <button class="btn-start" id="startBtn">🚀 Activate God Mode</button>
         <button class="btn-stop" id="stopBtn">🛑 Emergency Stop</button>
     </div>
 
@@ -232,11 +165,11 @@
                     <th>Entry ($)</th>
                     <th>Current ($)</th>
                     <th>PnL %</th>
-                    <th>Action</th>
+                    <th>Trade ($2 / Sell)</th>
                 </tr>
             </thead>
             <tbody id="portfolioBody">
-                <tr><td colspan="5" style="text-align:center; color: #666;">No active positions (0/10)</td></tr>
+                <tr><td colspan="5" style="text-align:center; color: #666;">Awaiting 100x Setups...</td></tr>
             </tbody>
         </table>
     </div>
@@ -251,39 +184,33 @@
     const portfolioBody = document.getElementById('portfolioBody');
     const buySound = document.getElementById('buySound');
     const sellSound = document.getElementById('sellSound');
-    const rejectSound = document.getElementById('rejectSound');
-    const connectWalletBtn = document.getElementById('connectWalletBtn');
 
     let scanInterval;
     let priceMonitorInterval;
     let knownTokens = new Set(); 
     let activePositions = {}; 
-    const MAX_SLOTS = 10;
-    let walletAddress = null;
     
-    const MAX_LOGS = 50; 
-    let logHistory = ["> System initialized. Waiting for wallet connection..."];
+    const TRADE_SIZE_SOL = "0.015"; // ~$2
+    const MAX_LOGS = 60; 
+    let logHistory = ["> System initialized. Strict profit filters applied..."];
 
-    function initLog() { renderLogs(); }
+    function renderLogs() {
+        logBox.innerHTML = logHistory.join('<br>');
+        logBox.scrollTop = logBox.scrollHeight;
+    }
 
     function log(message, type = '') {
         const timestamp = new Date().toLocaleTimeString([], { hour12: false });
         let prefix = `<span style="color:#555">[${timestamp}]</span> `;
         
-        if (type === 'buy') message = `<span class="signal-buy">✅ SECURE BUY: ${message}</span>`;
-        if (type === 'sell') message = `<span class="signal-sell">🚨 CLOSED: ${message}</span>`;
+        if (type === 'buy') message = `<span class="signal-buy">✅ BANGER FOUND: ${message}</span>`;
+        if (type === 'sell') message = `<span class="signal-sell">🚨 TARGET HIT: ${message}</span>`;
         if (type === 'safe') message = `<span class="signal-safe">🎯 ${message}</span>`;
-        if (type === 'reject') message = `<span style="color: #666;">❌ REJECTED: ${message}</span>`;
-        if (type === 'wallet') message = `<span style="color: var(--sol-purple);">👻 ${message}</span>`;
+        if (type === 'reject') message = `<span class="signal-reject">❌ Skipped: ${message}</span>`;
         
         logHistory.push(`${prefix}${message}`);
         if (logHistory.length > MAX_LOGS) logHistory.shift(); 
         renderLogs();
-    }
-
-    function renderLogs() {
-        logBox.innerHTML = logHistory.join('<br>');
-        logBox.scrollTop = logBox.scrollHeight;
     }
 
     function copyToClipboard(text, element) {
@@ -295,64 +222,36 @@
                 element.innerText = originalText;
                 element.style.color = ""; 
             }, 1000);
-        }).catch(err => log(`Failed to copy: ${err}`, "sell"));
+        });
     }
 
-    // --- PHANTOM WALLET CONNECTION ---
-    connectWalletBtn.addEventListener('click', async () => {
-        const provider = window.solana;
-        
-        // Check if Phantom is installed (Extension or In-App Browser)
-        if (provider && provider.isPhantom) {
-            try {
-                const resp = await provider.connect();
-                walletAddress = resp.publicKey.toString();
-                
-                connectWalletBtn.innerHTML = `✅ Connected: ${walletAddress.substring(0, 4)}...${walletAddress.substring(walletAddress.length - 4)}`;
-                connectWalletBtn.classList.add('connected');
-                log(`Wallet linked successfully: ${walletAddress}`, "wallet");
-            } catch (err) {
-                log(`Wallet connection cancelled by user.`, "reject");
-            }
-        } else {
-            // Mobile Universal Link (Redirects to open this site inside the Phantom app)
-            const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-            if (isMobile) {
-                const currentUrl = encodeURIComponent(window.location.href);
-                const phantomDeepLink = `https://phantom.app/ul/browse/${currentUrl}`;
-                log("Redirecting to Phantom Mobile Browser...", "wallet");
-                window.location.href = phantomDeepLink;
-            } else {
-                log("Phantom Wallet not found. Please install the browser extension.", "reject");
-                window.open('https://phantom.app/', '_blank');
-            }
-        }
-    });
-
-    async function safeFetch(url) {
+    // Bug Fix: Enhanced Anti-CORS with timeout to prevent hanging requests
+    async function fetchWithTimeout(url, timeout = 5000) {
+        const controller = new AbortController();
+        const id = setTimeout(() => controller.abort(), timeout);
         try {
-            const res = await fetch(url, { cache: 'no-store' });
+            const res = await fetch(url, { cache: 'no-store', signal: controller.signal });
+            clearTimeout(id);
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             return await res.json();
         } catch (error) {
-            if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-                const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-                const proxyRes = await fetch(proxyUrl, { cache: 'no-store' });
-                if (!proxyRes.ok) throw new Error(`Proxy HTTP ${proxyRes.status}`);
-                return await proxyRes.json();
-            }
-            throw error; 
+            clearTimeout(id);
+            if (error.name === 'AbortError') throw new Error('Request timed out');
+            
+            // Fallback proxy
+            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+            const proxyRes = await fetch(proxyUrl, { cache: 'no-store' });
+            if (!proxyRes.ok) throw new Error(`Proxy failed`);
+            return await proxyRes.json();
         }
     }
 
-    // --- 1. ELITE HIGH-WIN SCANNER ---
+    // --- 1. THE GOD-MODE SCANNER ---
     async function scanMarket() {
-        const currentActiveCount = Object.keys(activePositions).length;
-        if (currentActiveCount >= MAX_SLOTS) return;
+        if (Object.keys(activePositions).length >= 10) return; // Prevent DOM lag
 
-        log(`📡 Sweeping for elite pairs... (Slots: ${currentActiveCount}/${MAX_SLOTS})`);
         try {
-            const profiles = await safeFetch('https://api.dexscreener.com/token-profiles/latest/v1');
+            const profiles = await fetchWithTimeout('https://api.dexscreener.com/token-profiles/latest/v1');
             if (!profiles || !Array.isArray(profiles)) return;
 
             const newSolTokens = profiles
@@ -362,55 +261,57 @@
             if (newSolTokens.length === 0) return;
 
             const addressString = newSolTokens.slice(0, 30).join(',');
-            const pairData = await safeFetch(`https://api.dexscreener.com/latest/dex/tokens/${addressString}`);
+            const pairData = await fetchWithTimeout(`https://api.dexscreener.com/latest/dex/tokens/${addressString}`);
             
             if (!pairData || !pairData.pairs) return;
 
             for (const pool of pairData.pairs) {
-                if (Object.keys(activePositions).length >= MAX_SLOTS) break; 
-
-                if (pool.chainId !== 'solana' || !pool.baseToken || !pool.priceUsd) continue;
+                if (Object.keys(activePositions).length >= 10) break; 
+                
+                // Bug Fix: Strict null checking on every property
+                if (!pool || pool.chainId !== 'solana' || !pool.baseToken || !pool.priceUsd) continue;
 
                 const tokenAddress = pool.baseToken.address;
                 const tokenName = pool.baseToken.symbol.substring(0, 10);
                 
+                if (knownTokens.has(tokenAddress)) continue;
+
                 const price = parseFloat(pool.priceUsd);
                 const liquidity = pool.liquidity?.usd || 0;
                 const fdv = pool.fdv || 0;
-                const volume1h = pool.volume?.h1 || 0;
+                const vol1h = pool.volume?.h1 || 0;
                 const buys1h = pool.txns?.h1?.buys || 0;
                 const sells1h = pool.txns?.h1?.sells || 0;
-                const totalTxns = buys1h + sells1h;
 
-                if (isNaN(price) || isNaN(liquidity)) continue; 
+                if (isNaN(price)) continue; 
 
-                if (!knownTokens.has(tokenAddress)) {
-                    knownTokens.add(tokenAddress); 
+                // Track that we checked it so we don't spam the API with the same junk
+                knownTokens.add(tokenAddress); 
 
-                    if (liquidity < 10000 || fdv < 100000 || volume1h < 25000 || totalTxns < 100) continue;         
-                    if (sells1h === 0 || buys1h < (sells1h * 1.2)) continue;
+                // 👑 THE PROFIT FILTERS 👑
+                if (liquidity < 20000) { log(`${tokenName} - Low Liq ($${Math.floor(liquidity)})`, "reject"); continue; }
+                if (fdv < 100000) { log(`${tokenName} - MCap too low ($${Math.floor(fdv)})`, "reject"); continue; }
+                if (fdv > 2000000) { log(`${tokenName} - MCap too high ($${Math.floor(fdv)})`, "reject"); continue; }
+                if (vol1h < 50000) { log(`${tokenName} - Low 1h Vol`, "reject"); continue; }
+                if (sells1h === 0 || buys1h < (sells1h * 1.5)) { log(`${tokenName} - Weak Buy Ratio`, "reject"); continue; }
 
-                    const hasSocials = pool.info && ((pool.info.websites && pool.info.websites.length > 0) || (pool.info.socials && pool.info.socials.length > 0));
-                    if (!hasSocials) continue; 
-
-                    log(`Elite Setup Found: ${tokenName}`, "safe");
-                    executeBuy(tokenAddress, tokenName, price);
-                }
+                // Passed all checks!
+                executeBuy(tokenAddress, tokenName, price);
             }
         } catch (error) {
-            log(`Scan Network Error: ${error.message}`);
+            // Silently handle errors to prevent DOM spam
         }
     }
 
-    // --- 2. EXECUTION ---
+    // --- 2. EXECUTION PREP ---
     function executeBuy(address, name, price) {
-        activePositions[address] = { name: name, entryPrice: price, currentPrice: price, pnl: 0 };
+        activePositions[address] = { name: name, entryPrice: price, currentPrice: price, pnl: 0, status: 'Active' };
         buySound.play().catch(() => {}); 
-        log(`${name} at $${price.toFixed(6)}`, "buy");
+        log(`READY TO BUY: ${name} (Super Bullish)`, "buy");
         updatePortfolioUI();
     }
 
-    // --- 3. PRICE MONITOR & AUTO CLEANUP ---
+    // --- 3. HIGH SPEED PRICE MONITOR ---
     async function monitorPrices() {
         const addresses = Object.keys(activePositions);
         if (addresses.length === 0) return;
@@ -418,7 +319,7 @@
         const batch = addresses.slice(0, 30); 
         try {
             const addressString = batch.join(',');
-            const data = await safeFetch(`https://api.dexscreener.com/latest/dex/tokens/${addressString}`);
+            const data = await fetchWithTimeout(`https://api.dexscreener.com/latest/dex/tokens/${addressString}`);
             if (!data || !data.pairs) return;
 
             const latestPrices = {};
@@ -439,42 +340,29 @@
                     activePositions[address].currentPrice = newPrice;
                     activePositions[address].pnl = pnlPercent;
 
-                    if (pnlPercent >= 30) triggerSell(address, `TP Hit (+${pnlPercent.toFixed(1)}%)`);
-                    else if (pnlPercent <= -15) triggerSell(address, `SL Hit (${pnlPercent.toFixed(1)}%)`);
+                    if (pnlPercent >= 30 && activePositions[address].status !== 'TP HIT') {
+                        activePositions[address].status = 'TP HIT';
+                        sellSound.play().catch(() => {}); 
+                        log(`${activePositions[address].name} HIT +30% TP! EXECUTE SELL!`, "sell");
+                    } else if (pnlPercent <= -15 && activePositions[address].status !== 'SL HIT') {
+                        activePositions[address].status = 'SL HIT';
+                        sellSound.play().catch(() => {}); 
+                        log(`${activePositions[address].name} HIT -15% SL! CUT LOSS!`, "sell");
+                    }
                 }
             }
             updatePortfolioUI();
         } catch (error) {
-            log(`Price check failed: ${error.message}`);
+            // Silent catch to prevent lag
         }
     }
 
-    // --- 4. ALERTS & REMOVAL ---
-    function triggerSell(address, reason) {
-        if(!activePositions[address]) return;
-        const tokenName = activePositions[address].name;
-        delete activePositions[address]; 
-        sellSound.play().catch(() => {}); 
-        log(`${tokenName} ${reason}`, "sell");
-        updatePortfolioUI();
-    }
-
-    // --- 5. MANUAL EARLY PROFIT OVERRIDE ---
-    window.secureEarlyProfit = function(address) {
-        if(activePositions[address]) {
-            const currentPnl = activePositions[address].pnl;
-            const sign = currentPnl >= 0 ? '+' : '';
-            triggerSell(address, `Manual Early Profit Secured (${sign}${currentPnl.toFixed(2)}%)`);
-        }
-    };
-
-    // --- 6. RENDER UI ---
+    // --- 4. RENDER UI ---
     function updatePortfolioUI() {
         const addresses = Object.keys(activePositions);
-        const activeCount = addresses.length;
         
-        if (activeCount === 0) {
-            portfolioBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: #666;">No active positions (0/${MAX_SLOTS})</td></tr>`;
+        if (addresses.length === 0) {
+            portfolioBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: #666;">Awaiting 100x Setups...</td></tr>`;
             return;
         }
 
@@ -489,6 +377,9 @@
                 pnlClass = pos.pnl > 0 ? 'profit' : 'loss';
             }
 
+            const buyUrl = `https://jup.ag/swap/SOL-${address}?inAmount=${TRADE_SIZE_SOL}`;
+            const sellUrl = `https://jup.ag/swap/${address}-SOL`;
+
             htmlRender += `
                 <tr>
                     <td>
@@ -501,8 +392,8 @@
                     <td>$${pos.currentPrice.toFixed(6)}</td>
                     <td class="${pnlClass}">${pnlDisplay}</td>
                     <td class="action-cell">
-                        <button class="btn-early-sell" onclick="secureEarlyProfit('${address}')">Secure Profit</button>
-                        <a href="https://dexscreener.com/solana/${address}" target="_blank" class="btn-dex">Dex</a>
+                        <a href="${buyUrl}" target="_blank" class="btn-buy">Buy $2</a>
+                        <a href="${sellUrl}" target="_blank" class="btn-sell">Sell All</a>
                     </td>
                 </tr>
             `;
@@ -512,31 +403,28 @@
 
     // --- CONTROLS ---
     startBtn.addEventListener('click', () => {
-        if(!walletAddress) {
-            alert("⚠️ Please connect your Phantom Wallet first.");
-            return;
-        }
-
         buySound.play().catch(() => {}); 
-        rejectSound.play().catch(() => {});
         sellSound.play().catch(() => {});
         
         startBtn.style.display = 'none';
         stopBtn.style.display = 'block';
         
-        log(`🟢 Web3 Engine Started. Linked to ${walletAddress.substring(0,4)}...`);
+        log(`🟢 God Mode Active. Scanning every 10 seconds...`);
         
         scanMarket();
-        scanInterval = setInterval(scanMarket, 20000); 
-        priceMonitorInterval = setInterval(monitorPrices, 25000); 
+        // Sped up to 10 seconds. Any faster and the browser will get IP banned by APIs.
+        scanInterval = setInterval(scanMarket, 10000); 
+        priceMonitorInterval = setInterval(monitorPrices, 10000); 
     });
 
     stopBtn.addEventListener('click', () => {
         startBtn.style.display = 'block';
         stopBtn.style.display = 'none';
+        
+        // Bug Fix: Clear intervals instantly to stop background hanging
         clearInterval(scanInterval);
         clearInterval(priceMonitorInterval);
-        log("🛑 Engine Stopped securely.");
+        log("🛑 Engine Stopped.");
     });
 
     initLog();
